@@ -2,6 +2,7 @@ package com.example.morningmobileappmvvm.ui.theme.screens.clients
 
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -50,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -60,24 +62,28 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.morningmobileappmvvm.R
+import com.example.morningmobileappmvvm.data.ClientViewModel
+
+
 
 @Composable
 fun AddClient(navController: NavController){
-    val imageuri = rememberSaveable() {
-        mutableStateOf(value = "")
+    val imageUri = rememberSaveable() {
+        mutableStateOf<Uri?>(null)
     }
     val painter = rememberImagePainter(
-        if (imageuri.value.isEmpty())
-        R.drawable.ic_person
-        else
-        imageuri.value
+        data = imageUri.value ?: R.drawable.ic_person,
+        builder = {
+            crossfade(true)
+        }
     )
+
     val launcher = rememberLauncherForActivityResult(
-        contract =ActivityResultContracts.GetContent()
-        ){
-        uri: Uri? ->
-        uri?.let { imageuri.value = it.toString() }
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { imageUri.value = it }
     }
+
     var firstname by remember {
         mutableStateOf(value = "")
     }
@@ -151,7 +157,21 @@ fun AddClient(navController: NavController){
                 Button(onClick = { /*TODO*/ }) {
                     Text(text = "GO BACK")
                 }
-                Button(onClick = { /*TODO*/ }) {
+                val context = LocalContext.current
+                Button(onClick = {
+                    val clientRepository =
+                        ClientViewModel(navController, context)
+                    imageUri.value?.let { uri ->
+                        clientRepository
+                            .saveClient(uri, firstname,
+                                lastname, gender, age, bio)
+                    } ?: run {
+                        Toast.makeText(context,
+                            "Please select an image",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+                ) {
                     Text(text = "SAVE")
                 }
             }

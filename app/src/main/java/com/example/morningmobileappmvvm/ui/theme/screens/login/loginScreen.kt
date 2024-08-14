@@ -106,7 +106,7 @@ fun Login(navController: NavController) {
         val context = LocalContext.current
         Button(
             onClick = {
-             val mylogin = AuthViewModel(navController, context)
+                val mylogin = AuthViewModel(navController, context)
                 mylogin.login(email.trim(), password.trim())
             },
             colors = ButtonDefaults.buttonColors(Color.Black),

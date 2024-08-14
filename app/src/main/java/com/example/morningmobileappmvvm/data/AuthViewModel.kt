@@ -3,6 +3,7 @@ package com.example.morningmobileappmvvm.data
 import android.content.Context
 import android.widget.Toast
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.morningmobileappmvvm.models.User
 import com.example.morningmobileappmvvm.navigation.ROUTE_HOME
 import com.example.morningmobileappmvvm.navigation.ROUTE_LOGIN
@@ -61,5 +62,8 @@ class AuthViewModel(var navController: NavController,
                     Toast.LENGTH_LONG).show()
             }
         }
+    }
+    fun isloggedin():Boolean{
+        return mAuth.currentUser !=null
     }
 }
