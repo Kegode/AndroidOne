@@ -41,6 +41,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.morningmobileappmvvm.R
 import com.example.morningmobileappmvvm.data.AuthViewModel
+import com.example.morningmobileappmvvm.navigation.ROUTE_HOME
 
 @Composable
 fun Login(navController: NavController) {
@@ -108,6 +109,7 @@ fun Login(navController: NavController) {
             onClick = {
                 val mylogin = AuthViewModel(navController, context)
                 mylogin.login(email.trim(), password.trim())
+                navController.navigate(ROUTE_HOME)
             },
             colors = ButtonDefaults.buttonColors(Color.Black),
             modifier = Modifier

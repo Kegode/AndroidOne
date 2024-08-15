@@ -88,7 +88,7 @@ fun HomeScreens(navController: NavController) {
             Card (
                 modifier = Modifier.padding(10.dp)
                     .clickable {
-                               navController.navigate(ROUTE_ADD_CLIENT)
+                        navController.navigate(ROUTE_ADD_CLIENT)
                     },
                 shape = RoundedCornerShape(20.dp),
                 elevation = CardDefaults.cardElevation(10.dp)
@@ -108,7 +108,7 @@ fun HomeScreens(navController: NavController) {
                             fontStyle = FontStyle.Normal,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
-                            text = "SAVINGS ACCOUNT")
+                            text = "ADD CLIENT")
                     }
                 }
 

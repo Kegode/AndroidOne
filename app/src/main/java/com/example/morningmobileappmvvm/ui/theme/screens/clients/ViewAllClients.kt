@@ -49,6 +49,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.morningmobileappmvvm.data.ClientViewModel
 import com.example.morningmobileappmvvm.models.Client
+import com.example.morningmobileappmvvm.navigation.ROUTE_UPDATE_CLIENT
 
 
 @Composable
@@ -103,6 +104,7 @@ fun ClientItem(imageUrl:String,firstname:String,lastname:String,gender:String,
     var showFullText by remember {
         mutableStateOf(false)
     }
+    val context= LocalContext.current
     Column (modifier = Modifier.fillMaxWidth(),){
         Card (
             modifier = Modifier
@@ -126,7 +128,9 @@ fun ClientItem(imageUrl:String,firstname:String,lastname:String,gender:String,
                         contentScale = ContentScale.Crop)
                     Row {
                         Button(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                productRepository.deleteClient(context ,id,navController)
+                            },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(Color.Red)
                         ) {
@@ -136,7 +140,9 @@ fun ClientItem(imageUrl:String,firstname:String,lastname:String,gender:String,
                                 fontSize = 16.sp)
                         }
                         Spacer(modifier = Modifier.width(5.dp))
-                        Button(onClick = { /*TODO*/ },
+                        Button(onClick = {
+                            navController.navigate(ROUTE_UPDATE_CLIENT+"/$id")
+                        },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(Color.Green)
                         ) {

@@ -63,7 +63,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.morningmobileappmvvm.R
 import com.example.morningmobileappmvvm.data.ClientViewModel
-
+import com.example.morningmobileappmvvm.navigation.ROUTE_VIEW_CLIENT
 
 
 @Composable
@@ -170,6 +170,7 @@ fun AddClient(navController: NavController){
                             "Please select an image",
                             Toast.LENGTH_SHORT).show()
                     }
+                    navController.navigate(ROUTE_VIEW_CLIENT)
                 }
                 ) {
                     Text(text = "SAVE")
@@ -188,7 +189,7 @@ fun AddClient(navController: NavController){
                     Image(painter = painter ,
                         contentDescription = null,
                         modifier = Modifier
-                            .wrapContentSize()
+                            .size(180.dp)
                             .clickable { launcher.launch("image/*") },
                         contentScale = ContentScale.Crop)
                 }
