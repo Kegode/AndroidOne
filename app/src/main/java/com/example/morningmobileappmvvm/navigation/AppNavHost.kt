@@ -15,7 +15,7 @@ import com.example.morningmobileappmvvm.ui.theme.screens.register.Greeting
 @Composable
 fun AppNavHost(
     navController: NavHostController =rememberNavController(),
-    startDestination: String = ROUTE_VIEW_CLIENT){
+    startDestination: String = ROUTE_REGISTER){
 
     NavHost(navController=navController,
         startDestination=startDestination){

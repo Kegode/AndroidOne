@@ -71,13 +71,16 @@ class ClientViewModel(var navController: NavController,
         return clients
     }
     fun updateClient(
+        context: Context,  // Pass context from the Composable or ViewModel
+        navController: NavController,  // Pass navController from the Composable or ViewModel
         filePath: Uri,
         firstname: String,
         lastname: String,
         gender: String,
         age: String,
         bio: String,
-        id: String
+        id: String,
+        currentImageUrl: String // Pass the current image URL from the database
     ) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("Client/$id")
 
@@ -106,7 +109,8 @@ class ClientViewModel(var navController: NavController,
                     Toast.makeText(context, "Image upload failed: ${exception.message}", Toast.LENGTH_SHORT).show()
                 }
         } else {
-            val updatedClient = Client("", firstname, lastname, gender, age, bio, id)
+            // Keep the current image URL if no new image is selected
+            val updatedClient = Client(currentImageUrl, firstname, lastname, gender, age, bio, id)
             databaseReference.setValue(updatedClient)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -118,6 +122,7 @@ class ClientViewModel(var navController: NavController,
                 }
         }
     }
+
 
     fun deleteClient(context: Context, id: String, navController: NavController) {
         // Initialize a ProgressDialog (if desired, or use another indicator)

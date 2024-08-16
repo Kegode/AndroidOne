@@ -36,6 +36,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,6 +69,8 @@ import com.google.firebase.database.ValueEventListener
 @Composable
 fun UpdateClient(navController: NavController, id: String) {
     var imageUri = rememberSaveable { mutableStateOf<Uri?>(null) }
+    var existingImageUrl by rememberSaveable { mutableStateOf("") }
+
     val painter = rememberImagePainter(
         data = imageUri.value ?: R.drawable.ic_person,
         builder = {
@@ -93,22 +96,28 @@ fun UpdateClient(navController: NavController, id: String) {
         .child("Client/$id")
 
     // Load existing client data
-    currentDataRef.addValueEventListener(object : ValueEventListener {
-        override fun onDataChange(snapshot: DataSnapshot) {
-            val client = snapshot.getValue(Client::class.java)
-            client?.let {
-                firstname = it.firstname
-                lastname = it.lastname
-                gender = it.gender
-                age = it.age
-                bio = it.bio
+    DisposableEffect(Unit) {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val client = snapshot.getValue(Client::class.java)
+                client?.let {
+                    firstname = it.firstname
+                    lastname = it.lastname
+                    gender = it.gender
+                    age = it.age
+                    bio = it.bio
+                    imageUri.value = it.imageUrl?.let { uri -> Uri.parse(uri) } // For displaying the current image
+                    existingImageUrl = it.imageUrl ?: "" // Store the existing image URL
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
         }
-
-        override fun onCancelled(error: DatabaseError) {
-            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-        }
-    })
+        currentDataRef.addValueEventListener(listener)
+        onDispose { currentDataRef.removeEventListener(listener) }
+    }
 
     Scaffold(
         bottomBar = {
@@ -167,20 +176,22 @@ fun UpdateClient(navController: NavController, id: String) {
                 Button(onClick = {
                     val clientRepository = ClientViewModel(navController, context)
 
-                    // Attempt to update the client
                     clientRepository.updateClient(
+                        context = context,
+                        navController = navController,
                         filePath = imageUri.value ?: Uri.EMPTY,
                         firstname = firstname,
                         lastname = lastname,
                         gender = gender,
                         age = age,
                         bio = bio,
-                        id = id
+                        id = id,
+                        currentImageUrl = existingImageUrl // Pass the current image URL
                     )
-                    navController.navigate(ROUTE_VIEW_CLIENT)
                 }) {
                     Text(text = "UPDATE")
                 }
+
             }
             Column(
                 modifier = Modifier.fillMaxWidth(),

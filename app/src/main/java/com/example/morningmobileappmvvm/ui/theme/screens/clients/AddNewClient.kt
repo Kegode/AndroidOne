@@ -159,22 +159,25 @@ fun AddClient(navController: NavController){
                 }
                 val context = LocalContext.current
                 Button(onClick = {
-                    val clientRepository =
-                        ClientViewModel(navController, context)
-                    imageUri.value?.let { uri ->
-                        clientRepository
-                            .saveClient(uri, firstname,
-                                lastname, gender, age, bio)
-                    } ?: run {
-                        Toast.makeText(context,
-                            "Please select an image",
-                            Toast.LENGTH_SHORT).show()
+                    val clientRepository = ClientViewModel(navController, context)
+
+                    if (imageUri.value != null) {
+                        clientRepository.saveClient(
+                            filePath = imageUri.value!!,
+                            firstname = firstname,
+                            lastname = lastname,
+                            gender = gender,
+                            age = age,
+                            bio = bio
+                        )
+                        navController.navigate(ROUTE_VIEW_CLIENT) // Navigate only after saving
+                    } else {
+                        Toast.makeText(context, "Please select an image", Toast.LENGTH_SHORT).show()
                     }
-                    navController.navigate(ROUTE_VIEW_CLIENT)
-                }
-                ) {
+                }) {
                     Text(text = "SAVE")
                 }
+
             }
             Column(
                 modifier = Modifier.fillMaxWidth(),
